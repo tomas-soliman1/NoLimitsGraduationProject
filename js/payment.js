@@ -222,13 +222,3 @@ function showReceiptModal(id){
 }
 
 function closePay(){var m=$('mo');if(m)m.remove()}
-.pm-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0}
-.pm-tab{padding:8px 4px;border:1.5px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font-size:.78rem;text-align:center;cursor:pointer;font-weight:700}
-.pm-tab.active{border-color:var(--pr);background:rgba(79,70,229,.08);color:var(--pr)}
-.pm-tab span{display:block;font-size:1.3rem;margin-bottom:2px}
-.pay-info{background:var(--bg);border:1px dashed var(--bd);border-radius:10px;padding:12px;margin:10px 0;font-size:.88rem}
-.copy-box{display:flex;justify-content:space-between;align-items:center;background:var(--card);padding:6px 10px;border-radius:8px;border:1px solid var(--bd);margin-top:6px;font-family:monospace;font-size:.95rem}
-.receipt{border:1px dashed var(--bd);background:var(--bg);border-radius:12px;padding:14px;text-align:right;font-size:.86rem;margin:12px 0}
-.receipt div{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bd)}
-.receipt div:last-child{border:0}
-.secure-badge{display:flex;align-items:center;justify-content:center;gap:6px;font-size:.75rem;color:var(--ok);margin-top:10px;font-weight:600}
