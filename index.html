@@ -1,204 +1,23 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>أكاديمية كورسات</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
-</head>
-<body class="bg-light">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coursera Plus</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="./">
+<link rel="stylesheet" href="./css/style.css">
 
-  <nav class="navbar bg-white shadow-sm px-3">
-    <span class="navbar-brand fw-bold">🎓 أكاديمية كورسات</span>
-    <div id="userBox"></div>
-  </nav>
-
-  <div class="container my-4">
-
-    <!-- صفحة الدخول -->
-    <section id="authPage" class="mx-auto" style="max-width:380px">
-      <h3>سجّل دخولك</h3>
-      <input id="name" class="form-control my-2" placeholder="الاسم (للحساب الجديد فقط)">
-      <input id="email" class="form-control my-2" placeholder="البريد الإلكتروني">
-      <input id="password" type="password" class="form-control my-2" placeholder="كلمة السر">
-      <p id="msg" class="text-danger"></p>
-      <button class="btn btn-primary" onclick="login()">دخول</button>
-      <button class="btn btn-outline-primary" onclick="register()">حساب جديد</button>
-    </section>
-
-    <!-- قائمة الكورسات -->
-    <section id="coursesPage">
-      <h3>الكورسات المتاحة</h3>
-      <div id="list" class="row g-3"></div>
-    </section>
-
-    <!-- صفحة الكورس -->
-    <section id="coursePage"></section>
-
-  </div>
-
-  <script >// ===== 1) بيانات الكورسات (عدّل هنا براحتك) =====
-const courses = [
-  { name: "برمجة بايثون",     icon: "🐍", color: "#93c5fd", desc: "تعلم البرمجة من الصفر" },
-  { name: "تطوير الويب",      icon: "🌐", color: "#a7f3d0", desc: "HTML وCSS وJavaScript" },
-  { name: "تصميم الجرافيك",   icon: "🎨", color: "#fbcfe8", desc: "أساسيات التصميم" },
-  { name: "الذكاء الاصطناعي", icon: "🤖", color: "#c4b5fd", desc: "مدخل لعالم AI" },
-  { name: "تحليل البيانات",   icon: "📊", color: "#fde68a", desc: "حلل البيانات بسهولة" },
-  { name: "اللغة الإنجليزية", icon: "🗣️", color: "#fecaca", desc: "محادثة وقواعد" },
-  { name: "التسويق الرقمي",   icon: "📣", color: "#fed7aa", desc: "إعلانات وسوشيال ميديا" },
-  { name: "الأمن السيبراني",  icon: "🔐", color: "#d1d5db", desc: "احمِ نفسك من الاختراق" },
-  { name: "تطبيقات الموبايل", icon: "📱", color: "#a5f3fc", desc: "ابنِ تطبيقك الأول" },
-  { name: "المونتاج",         icon: "🎬", color: "#e9d5ff", desc: "من التصوير للمونتاج" },
-  { name: "ريادة الأعمال",    icon: "💼", color: "#bbf7d0", desc: "ابدأ مشروعك" },
-  { name: "الموسيقى",         icon: "🎹", color: "#fbcfe8", desc: "أساسيات العزف" },
-  { name: "الرياضيات",        icon: "🧮", color: "#fef08a", desc: "افهم الرياضيات بسهولة" },
-  { name: "الشبكات",          icon: "🛰️", color: "#bae6fd", desc: "أساسيات الشبكات" },
-  { name: "التصوير",          icon: "📷", color: "#fecdd3", desc: "الإضاءة والتكوين" }
-];
-const lessons = ["المقدمة", "الأساسيات", "التطبيق العملي", "مشروع صغير", "المراجعة"];
-
-// ===== 2) الحفظ والقراءة من المتصفح =====
-const load = (key, fallback) => JSON.parse(localStorage.getItem(key)) || fallback;
-const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
-const $ = (id) => document.getElementById(id);
-
-let user = load("currentUser", null); // بريد الطالب الداخل أو null
-
-// ===== 3) الدخول والتسجيل =====
-function register() {
-  const users = load("users", {});
-  if (!$("name").value || !$("email").value || !$("password").value) return error("املأ كل الخانات");
-  if (users[$("email").value]) return error("البريد ده مسجل قبل كده");
-
-  users[$("email").value] = { name: $("name").value, password: $("password").value };
-  save("users", users);
-  enter($("email").value);
-}
-
-function login() {
-  const u = load("users", {})[$("email").value];
-  if (!u || u.password !== $("password").value) return error("البريد أو كلمة السر غلط");
-  enter($("email").value);
-}
-
-function enter(email) { user = email; save("currentUser", user); start(); }
-function logout()     { enter(null); }
-function error(text)  { $("msg").textContent = text; }
-
-// ===== 4) التقدم =====
-// بترجع الدروس المنجزة، أو undefined لو الطالب مش مسجل في الكورس
-function getDone(id) {
-  return (load("progress", {})[user] || {})[id];
-}
-
-function updateProgress(id, change) {
-  const p = load("progress", {});
-  p[user] = p[user] || {};
-  p[user][id] = change(p[user][id]); // نعدل القائمة
-  save("progress", p);
-  openCourse(id);
-}
-
-const enroll       = (id)    => updateProgress(id, () => []);
-const finishLesson = (id, n) => updateProgress(id, (done) => [...done, n]);
-
-// ===== 5) عرض الصفحات =====
-function show(pageId) {
-  ["authPage", "coursesPage", "coursePage"].forEach((id) =>
-    $(id).classList.toggle("d-none", id !== pageId));
-}
-
-function showCourses() {
-  $("list").innerHTML = courses.map((c, id) => {
-    const done = getDone(id);
-    const badge = done ? `<span class="badge bg-success">مسجّل ${done.length}/${lessons.length}</span>` : "";
-    return `
-      <div class="col-6 col-md-4 col-lg-3">
-        <div class="card h-100 shadow-sm" role="button" onclick="openCourse(${id})">
-          <div class="display-3 text-center py-4" style="background:${c.color}">${c.icon}</div>
-          <div class="card-body">
-            <h5>${c.name}</h5>
-            <p class="text-muted small">${c.desc}</p>
-            ${badge}
-          </div>
-        </div>
-      </div>`;
-  }).join("");
-  show("coursesPage");
-}
-
-function openCourse(id) {
-  const c = courses[id];
-  const done = getDone(id); // undefined = مش مسجل
-  let status;
-
-  if (done) {
-    const percent = done.length / lessons.length * 100;
-    status = `✅ أنت مسجّل في الكورس
-      <div class="progress my-2"><div class="progress-bar bg-success" style="width:${percent}%"></div></div>
-      أنجزت ${done.length} من ${lessons.length} دروس`;
-  } else {
-    status = `أنت مش مسجّل في الكورس ده <button class="btn btn-primary btn-sm" onclick="enroll(${id})">سجّل الآن</button>`;
-  }
-
-  const rows = lessons.map((title, n) => {
-    const action = !done ? "🔒"
-      : done.includes(n) ? "✔ تم"
-      : `<button class="btn btn-success btn-sm" onclick="finishLesson(${id},${n})">تم الدرس</button>`;
-    return `<li class="list-group-item d-flex justify-content-between">
-              <span>الدرس ${n + 1}: ${title}</span>${action}</li>`;
-  }).join("");
-
-  $("coursePage").innerHTML = `
-    <button class="btn btn-outline-secondary mb-3" onclick="showCourses()">← رجوع</button>
-    <h2>${c.icon} ${c.name}</h2>
-    <p>${c.desc}</p>
-    <div class="alert alert-info">${status}</div>
-    <h4>محتوى الكورس</h4>
-    <ul class="list-group">${rows}</ul>`;
-  show("coursePage");
-}
-
-// ===== 6) نقطة البداية =====
-function start() {
-  if (user) {
-    $("userBox").innerHTML = `${load("users", {})[user].name}
-      <button class="btn btn-sm btn-outline-danger" onclick="logout()">خروج</button>`;
-    showCourses();
-  } else {
-    $("userBox").innerHTML = "";
-    show("authPage");
-  }
-}
-start();</script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>No Limits</title>
-    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
+<header><div class="logo" onclick="location.hash='courses'">🎓 Coursera Plus</div><div class="u" id="hu"></div></header>
+<main id="app"></main>
+<script>
 
-
-    <div class="card" style="width: 18rem;">
-  <img src="..." class="card-img-top" alt="...">
-  <div class="card-body">
-    <h2 class="card-title">Card title</h2>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-  </div>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item">An item</li>
-    <li class="list-group-item">A second item</li>
-    <li class="list-group-item">A third item</li>
-  </ul>
-  <div class="card-body flex-row gap-4">
-    <a href="#">Card link</a>
-    <a href="#">Another link</a>
-  </div>
-</div>
-
-
+</script>
+</body>
+</html>
     
 
-    <script src="./js/style.js"></script>
+    <script src="./js/script.js"></script>
 </body>
 </html>
