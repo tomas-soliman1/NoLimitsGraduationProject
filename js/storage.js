@@ -51,6 +51,9 @@ function normPhone(s){
 }
 function okPhone(p){return /^01[0125]\d{8}$/.test(p)}
 function okAge(s){s=toEn(s).trim();return /^\d{1,3}$/.test(s)&&+s>=AGE_MIN&&+s<=AGE_MAX}
+/* الاسم لازم يبدأ بحرف (عربي أو إنجليزي) ومفيهوش أرقام */
+function okName(n){n=n.trim();return n.length>=2&&/^\p{L}[\p{L}\p{M}\s.'\-]*$/u.test(n)}
+var NAME_ERR='الاسم لازم يبدأ بحروف ومينفعش يحتوي على أرقام';
 function ageLabel(c){return c.minAge<=AGE_MIN&&c.maxAge>=AGE_MAX?'كل الأعمار':'من '+c.minAge+' لـ '+c.maxAge+' سنة'}
 
 var mem={};

@@ -33,6 +33,7 @@ function go(){
  if(mode=='up'){
   n=$('n').value.trim();
   if(!n){er.textContent='اكتب اسمك';return}
+  if(!okName(n)){er.textContent=NAME_ERR;return}
  }
  if(!/^\S+@\S+\.\S+$/.test(e)){er.textContent='اكتب بريد إلكتروني صحيح';return}
  if(mode=='up'){

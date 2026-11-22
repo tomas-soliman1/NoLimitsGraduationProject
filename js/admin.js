@@ -125,6 +125,7 @@ function saveStu(eq){
  if(!u[e]){closePay();admin();return}
  var n=$('sn').value.trim(),e2=$('se').value.trim().toLowerCase(),ph=normPhone($('sp').value),npw=$('spw').value;
  if(!n){er.textContent='اكتب اسم الطالب';return}
+ if(!okName(n)){er.textContent=NAME_ERR;return}
  if(!/^\S+@\S+\.\S+$/.test(e2)){er.textContent='اكتب بريد إلكتروني صحيح';return}
  if(e2!==e&&u[e2]){er.textContent='البريد ده مستخدم لطالب تاني';return}
  if(!okAge($('sa').value)){er.textContent='السن لازم يكون من '+AGE_MIN+' لـ '+AGE_MAX+' سنة';return}
