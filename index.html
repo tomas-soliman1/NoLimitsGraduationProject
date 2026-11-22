@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coursera Plus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+  
+
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/student.css">
+  <link rel="stylesheet" href="css/payment.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="#" style="color:inherit;text-decoration:none">🎓 Coursera Plus</a>
+    <nav class="nv" id="nv" aria-label="التنقل الرئيسي" onclick="this.classList.remove('open')"></nav>
+    <div class="u" id="hu"></div>
+    <button class="g bg" id="bg" onclick="toggleNav()" aria-label="القائمة">☰</button>
+  </header>
+
+  <main id="app"></main>
+
+  <footer>
+    <div class="f-grid">
+      <div class="f-about">
+        <b>🎓 Coursera Plus</b>
+        <p>منصة تعليمية بالعربي، كورسات للأطفال والشباب والكبار في مكان واحد.</p>
+      </div>
+      <div class="f-links" aria-label="روابط سريعة">
+        <b>روابط سريعة</b>
+        <a href="#">الرئيسية</a>
+        <a href="#courses">الكورسات</a>
+        <a href="#about">من نحن</a>
+        <a href="#reviews">آراء الطلاب</a>
+      </div>
+      <div class="f-contact">
+        <b>تواصل معنا</b>
+        <address>
+          <a href="https://www.google.com/maps/search/?api=1&query=%D8%A7%D9%84%D9%81%D9%8A%D9%88%D9%85%D8%8C+%D9%85%D8%B5%D8%B1" target="_blank" rel="noopener">📍 الفيوم، مصر</a>
+          <a href="tel:+201000000000" dir="ltr">📞 010 0000 0000</a>
+        </address>
+      </div>
+    </div>
+    <div class="f-copy"><a class="hid" href="#adminlogin" tabindex="-1">©</a> 2026 <b>Coursera Plus</b> — جميع الحقوق محفوظة | تطوير فريق NoLimitsTeam</div>
+  </footer>
+
+  
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/student.js"></script>
+  <script src="js/payment.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/landing.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
