@@ -2,10 +2,12 @@ var payMethod='card';
 var receiptBase64='';
 
 function pay(id){
- var c=findCourse(id);if(!c)return;
+ var c=findCourse(id);
+ if(!c)return;
  payMethod='card';
  receiptBase64='';
- var m=document.createElement('div');m.className='mo';m.id='mo';
+ var m=document.createElement('div');
+ m.className='mo';m.id='mo';
  m.innerHTML='<div class="md"><div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">💳 بوابة الدفع الآمنة</h3><span style="font-weight:800;color:var(--pr)">'+c.price+' ج.م</span></div><p class="mu" style="margin:4px 0 10px;font-size:.86rem">الاشتراك في: <b>'+esc(c.title)+'</b></p>'+
   '<div class="pm-tabs">'+
    '<div class="pm-tab active" id="tab-card" onclick="setPayTab(\'card\',\''+id+'\')"><span>💳</span>بطاقة بنكية</div>'+
