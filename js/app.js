@@ -1,14 +1,35 @@
-function home(){
- $('app').innerHTML='<div class="home"><div style="font-size:4rem">🎓</div><h1>أهلاً بيك في Coursera Plus</h1><p class="mu">اختار دخولك للمنصة</p><div class="roles"><div class="role" onclick="location.hash=\'student\'"><span>🎓</span><b>طالب</b><br><small>تصفح الكورسات وسجّل فيها</small></div><div class="role" onclick="location.hash=\'adminlogin\'"><span>🛠️</span><b>أدمن</b><br><small>إحصائيات المنصة وإدارة المدفوعات</small></div></div></div>';
-}
+var HOME_HASHES=['','home','about'];
 
-function route(){
- var h=location.hash.slice(1),s=sess();head();window.scrollTo(0,0);
- if(!s){if(h=='student')auth();else if(h=='adminlogin')adminLogin();else home();return}
- if(s.role=='admin'){admin();return}
+function route(force){
+ var h=location.hash.slice(1),s=sess();
+ stopSlider();head();
+
+ /* الأدمن بيشوف لوحته بس */
+ if(s&&s.role=='admin'){admin();window.scrollTo(0,0);return}
+
+ /* رابط الأدمن مخفي من الواجهة — بيتفتح من #adminlogin */
+ if(h=='adminlogin'){loginMsg='';redirect=null;adminLogin();window.scrollTo(0,0);return}
+
+ /* صفحة دخول الطالب: بتتفتح من زرار الـ nav فقط */
+ if(h=='student'){
+  if(s){location.hash='courses';return}
+  authPage();window.scrollTo(0,0);return;
+ }
+
+ /* الرئيسية */
+ if(HOME_HASHES.indexOf(h)>-1){
+  if(force||view!=='home')home();else startSlider();
+  var t=h=='about'?$(h):null;
+  if(t)t.scrollIntoView();else window.scrollTo(0,0);
+  return;
+ }
+
+ loginMsg='';redirect=null;
  var m=/^course-(.+)$/.exec(h);
- if(m&&findCourse(m[1]))course(m[1]);else list();
+ if(m&&findCourse(m[1])&&findCourse(m[1]).available)course(m[1]);
+ else{if(view!=='course')fq=fa='';list()}
+ window.scrollTo(0,0);
 }
 
-window.addEventListener('hashchange',route);
-route();
+window.addEventListener('hashchange',function(){route()});
+route(true);

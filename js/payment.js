@@ -2,12 +2,11 @@ var payMethod='card';
 var receiptBase64='';
 
 function pay(id){
- var c=findCourse(id);
- if(!c)return;
+ if(!me()){needLogin(id);return}
+ var c=findCourse(id);if(!c)return;
  payMethod='card';
  receiptBase64='';
- var m=document.createElement('div');
- m.className='mo';m.id='mo';
+ var m=document.createElement('div');m.className='mo';m.id='mo';
  m.innerHTML='<div class="md"><div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">💳 بوابة الدفع الآمنة</h3><span style="font-weight:800;color:var(--pr)">'+c.price+' ج.م</span></div><p class="mu" style="margin:4px 0 10px;font-size:.86rem">الاشتراك في: <b>'+esc(c.title)+'</b></p>'+
   '<div class="pm-tabs">'+
    '<div class="pm-tab active" id="tab-card" onclick="setPayTab(\'card\',\''+id+'\')"><span>💳</span>بطاقة بنكية</div>'+
@@ -44,7 +43,7 @@ function renderPayBody(id){
   b.innerHTML=
    '<div class="pay-info">ادفع مباشرة عبر <b>فودافون كاش / اتصالات كاش / أورنج كاش / WE Pay</b></div>'+
    '<input id="wnum" placeholder="رقم المحفظة (مثال: 010xxxxxxxx)" maxlength="11" inputmode="numeric">'+
-   '<div id="otp-area" style="display:none"><input id="wotp" placeholder="أدخل كود التحقق المرسل لهاتفك (6 أرقام)" maxlength="6" inputmode="numeric"></div>'+
+   '<div id="otp-area" style="display:none"><div class="msg" id="otpm" role="status"></div><input id="wotp" placeholder="أدخل كود التحقق المرسل لهاتفك (6 أرقام)" maxlength="6" inputmode="numeric"></div>'+
    '<button id="pb" style="width:100%;margin-top:6px" onclick="processWalletPay(\''+id+'\')">إرسال كود التأكيد</button>';
  }else if(payMethod==='instapay'){
   b.innerHTML=
@@ -82,8 +81,10 @@ function formatExp(el){
 }
 
 function copyTxt(txt,btn){
- navigator.clipboard.writeText(txt);
- var old=btn.textContent;btn.textContent='تم النسخ ✓';setTimeout(function(){btn.textContent=old},1500);
+ var old=btn.textContent;
+ function ok(){btn.textContent='تم النسخ ✓';setTimeout(function(){btn.textContent=old},1500)}
+ function no(){btn.textContent='انسخه يدوياً';setTimeout(function(){btn.textContent=old},2000)}
+ try{navigator.clipboard.writeText(txt).then(ok,no)}catch(e){no()}
 }
 
 function handleReceiptFile(input){
@@ -129,11 +130,11 @@ function processWalletPay(id){
    $('pb').disabled=false;
    $('otp-area').style.display='block';
    $('pb').textContent='تأكيد الدفع ('+c.price+' ج.م)';
-   alert('📩 رسالة محفظة الكاش:\nكود تأكيد عملية الدفع بمبلغ '+c.price+' ج.م هو: '+generatedOtp);
+   say('otpm','📩 رسالة محفظة الكاش: كود تأكيد عملية الدفع بمبلغ '+c.price+' ج.م هو: '+generatedOtp,'in');
   },1000);
  }else{
   var otp=$('wotp').value.trim();
-  if(otp!==generatedOtp){er.textContent='كود التحقق غير صحيح (الكود المرسل: '+generatedOtp+')';return}
+  if(otp!==generatedOtp){er.textContent='كود التحقق غير صحيح، راجع الرسالة اللي فوق';return}
   $('pb').disabled=true;$('pb').textContent='⏳ جاري خصم الرصيد وتفعيل الكورس...';
   setTimeout(function(){
    var ref='WLT-'+Date.now().toString().slice(-8);
